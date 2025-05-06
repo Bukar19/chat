@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TranslateChat - Connect Across Languages</title>
+    <style>
+        :root {
+            --primary-green: #27ae60;
+            --dark-green: #1e8449;
+            --light-green: #2ecc71;
+            --black: #1a1a1a;
+            --white: #ffffff;
+            --light-gray: #f5f5f5;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light-gray);
+            color: var(--black);
+        }
+        
+        header {
+            background-color: var(--primary-green);
+            padding: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            color: var(--white);
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            margin-right: 8px;
+            font-size: 1.8rem;
+        }
+        
+        .nav-links {
+            display: flex;
+        }
+        
+        .nav-links a {
+            color: var(--white);
+            text-decoration: none;
+            margin-left: 1.5rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: var(--black);
+        }
+        
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 4rem 2rem;
+            background-color: var(--white);
+        }
+        
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--black);
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin-bottom: 2rem;
+            color: #555;
+        }
+        
+        .btn {
+            padding: 0.8rem 2rem;
+            background-color: var(--primary-green);
+            color: var(--white);
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn:hover {
+            background-color: var(--dark-green);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .features {
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .features h2 {
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 2rem;
+            color: var(--black);
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .feature-card {
+            background-color: var(--white);
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--primary-green);
+            margin-bottom: 1rem;
+        }
+        
+        .feature-card h3 {
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+        
+        .feature-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .demo {
+            background-color: var(--light-gray);
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+        
+        .demo h2 {
+            margin-bottom: 2rem;
+            font-size: 2rem;
+        }
+        
+        .chat-demo {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .chat-header {
+            background-color: var(--primary-green);
+            color: var(--white);
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .user {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-weight: bold;
+            color: var(--primary-green);
+        }
+        
+        .chat-body {
+            padding: 1.5rem;
+            height: 300px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .message {
+            max-width: 70%;
+            padding: 0.8rem 1rem;
+            margin-bottom: 1rem;
+            border-radius: 10px;
+            position: relative;
+        }
+        
+        .sender {
+            align-self: flex-end;
+            background-color: var(--primary-green);
+            color: var(--white);
+            border-bottom-right-radius: 0;
+        }
+        
+        .receiver {
+            align-self: flex-start;
+            background-color: #eee;
+            color: var(--black);
+            border-bottom-left-radius: 0;
+        }
+        
+        .translation {
+            font-size: 0.85rem;
+            font-style: italic;
+            margin-top: 0.5rem;
+            padding-top: 0.5rem;
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .receiver .translation {
+            border-top: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        .cta {
+            padding: 4rem 2rem;
+            text-align: center;
+            background-color: var(--white);
+        }
+        
+        .cta h2 {
+            margin-bottom: 1rem;
+            font-size: 2rem;
+        }
+        
+        .cta p {
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            color: #666;
+        }
+        
+        footer {
+            background-color: var(--black);
+            color: var(--white);
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        footer p {
+            margin-bottom: 1rem;
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .social-links a {
+            color: var(--white);
+            font-size: 1.2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .chat-demo {
+                margin: 0 1rem;
+            }
+            
+            .message {
+                max-width: 85%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .nav-links a {
+                margin-left: 1rem;
+                font-size: 0.9rem;
+            }
+            
+            .logo {
+                font-size: 1.2rem;
+            }
+            
+            .hero {
+                padding: 3rem 1rem;
+            }
+            
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <i class="fas fa-language"></i>
+                TranslateChat
+            </div>
+            <div class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#demo">Demo</a>
+                <a href="#contact">Contact</a>
+            </div>
+        </nav>
+    </header>
+    
+    <section class="hero">
+        <h1>Break Language Barriers with TranslateChat</h1>
+        <p>Connect and communicate seamlessly between English and Hausa. Our real-time translation chat app brings people together regardless of language differences.</p>
+      
+        <a href="login.html" class="btn" id="get-started">Get Started</a>
+    </section>
+    
+    <section class="features" id="features">
+        <h2>Why Choose TranslateChat?</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-sync-alt"></i>
+                </div>
+                <h3>Real-Time Translation</h3>
+                <p>Instantly translate messages between English and Hausa, allowing for smooth communication between Basiru and Abubakar.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-user-friends"></i>
+                </div>
+                <h3>Personalized Chats</h3>
+                <p>Custom-designed for Basiru Lawan and Abubakar Hamisu, making cross-language communication effortless.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <h3>Fully Responsive</h3>
+                <p>Access the chat app from any device with a perfect user experience on desktop, tablet, or mobile.</p>
+            </div>
+        </div>
+    </section>
+    
+    <section class="demo" id="demo">
+        <h2>See It In Action</h2>
+        <div class="chat-demo">
+            <div class="chat-header">
+                <div class="user">
+                    <div class="user-avatar">BL</div>
+                    <div>Basiru Lawan</div>
+                </div>
+                <div class="user">
+                    <div>Abubakar Hamisu</div>
+                    <div class="user-avatar">AH</div>
+                </div>
+            </div>
+            <div class="chat-body" id="chat-body">
+                <div class="message sender">
+                    <p>Hello, how are you doing today?</p>
+                    <p class="translation">Sannu, yaya kake yau?</p>
+                </div>
+                <div class="message receiver">
+                    <p>Ina lafiya sosai, kana yini?</p>
+                    <p class="translation">I'm very well, how's your day?</p>
+                </div>
+                <div class="message sender">
+                    <p>I'm doing great! Just working on a new project.</p>
+                    <p class="translation">Ina jin dadi! Ina aiki ne akan sabon aiki.</p>
+                </div>
+                <div class="message receiver">
+                    <p>Wannan kyakkyawa ne! Me yake game da aikin?</p>
+                    <p class="translation">That's great! What's the project about?</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="cta" id="contact">
+        <h2>Ready to Connect?</h2>
+        <p>Start breaking language barriers between English and Hausa communication today with our intuitive translation chat app.</p>
+        <a href="#" class="btn" id="get-started-bottom">Get Started Now</a>
+    </section>
+    
+    <footer>
+        <div class="social-links">
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+        </div>
+        <p>&copy; 2025 TranslateChat. All rights reserved.</p>
+    </footer>
+    
+    <script>
+        // Animation for chat messages
+        document.addEventListener('DOMContentLoaded', function() {
+            const messages = document.querySelectorAll('.message');
+            
+            // Hide all messages initially
+            messages.forEach(message => {
+                message.style.opacity = '0';
+                message.style.transform = 'translateY(20px)';
+                message.style.transition = 'all 0.5s ease';
+            });
+            
+            // Show messages with a delay
+            let delay = 1000;
+            messages.forEach(message => {
+                setTimeout(() => {
+                    message.style.opacity = '1';
+                    message.style.transform = 'translateY(0)';
+                }, delay);
+                delay += 1000;
+            });
+            
+            // Get Started button effect
+           // const getStartedButtons = document.querySelectorAll('#get-started, #get-started-bottom');
+            
+            getStartedButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Button press animation
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = 'scale(1)';
+                        alert('Welcome bukar.');
+                    }, 150);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

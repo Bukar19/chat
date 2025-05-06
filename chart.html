@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TranslateChat - Chat Interface</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-green: #27ae60;
+            --dark-green: #1e8449;
+            --light-green: #2ecc71;
+            --black: #1a1a1a;
+            --white: #ffffff;
+            --light-gray: #f5f5f5;
+            --mid-gray: #e0e0e0;
+            --dark-gray: #777;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light-gray);
+            color: var(--black);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        header {
+            background-color: var(--primary-green);
+            padding: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            color: var(--white);
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+        
+        .logo i {
+            margin-right: 8px;
+            font-size: 1.8rem;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            color: var(--white);
+        }
+        
+        .user-menu .avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background-color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-green);
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .main-container {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+        
+        .sidebar {
+            width: 300px;
+            background-color: var(--white);
+            border-right: 1px solid var(--mid-gray);
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+        
+        .search-container {
+            padding: 15px;
+            border-bottom: 1px solid var(--mid-gray);
+        }
+        
+        .search-box {
+            display: flex;
+            align-items: center;
+            background-color: var(--light-gray);
+            border-radius: 20px;
+            padding: 8px 15px;
+        }
+        
+        .search-box i {
+            color: var(--dark-gray);
+            margin-right: 10px;
+        }
+        
+        .search-input {
+            background: none;
+            border: none;
+            outline: none;
+            flex: 1;
+            font-size: 0.9rem;
+        }
+        
+        .chat-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+        
+        .chat-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid var(--mid-gray);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .chat-item:hover {
+            background-color: var(--light-gray);
+        }
+        
+        .chat-item.active {
+            background-color: rgba(39, 174, 96, 0.1);
+            border-left: 3px solid var(--primary-green);
+        }
+        
+        .chat-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--primary-green);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-right: 15px;
+        }
+        
+        .chat-info {
+            flex: 1;
+        }
+        
+        .chat-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .chat-preview {
+            color: var(--dark-gray);
+            font-size: 0.85rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .chat-meta {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+        
+        .chat-time {
+            font-size: 0.75rem;
+            color: var(--dark-gray);
+            margin-bottom: 5px;
+        }
+        
+        .unread-badge {
+            background-color: var(--primary-green);
+            color: var(--white);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+        
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        
+        .no-chat-selected {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--dark-gray);
+            text-align: center;
+            padding: 0 20px;
+        }
+        
+        .no-chat-selected i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: var(--mid-gray);
+        }
+        
+        .no-chat-selected h2 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .no-chat-selected p {
+            max-width: 400px;
+            line-height: 1.6;
+        }
+        
+        .chat-header {
+            background-color: var(--white);
+            padding: 15px;
+            border-bottom: 1px solid var(--mid-gray);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .chat-header-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .back-button {
+            display: none;
+            margin-right: 15px;
+            background: none;
+            border: none;
+            color: var(--dark-gray);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+        
+        .chat-person {
+            display: flex;
+            align-items: center;
+        }
+        
+        .person-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-green);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .person-info h3 {
+            font-size: 1rem;
+            margin-bottom: 3px;
+        }
+        
+        .person-info p {
+            font-size: 0.8rem;
+            color: var(--dark-gray);
+        }
+        
+        .chat-options {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .chat-option {
+            background: none;
+            border: none;
+            color: var(--dark-gray);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .chat-option:hover {
+            color: var(--primary-green);
+        }
+        
+        .messages-container {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            background-color: #f0f2f5;
+        }
+        
+        .message {
+            max-width: 65%;
+            padding: 10px 15px;
+            margin-bottom: 15px;
+            border-radius: 15px;
+            position: relative;
+            line-height: 1.4;
+        }
+        
+        .message-time {
+            font-size: 0.7rem;
+            color: var(--dark-gray);
+            text-align: right;
+            margin-top: 5px;
+        }
+        
+        .translation {
+            font-size: 0.85rem;
+            font-style: italic;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        .sent {
+            align-self: flex-end;
+            background-color: var(--primary-green);
+            color: var(--white);
+            border-bottom-right-radius: 5px;
+        }
+        
+        .sent .translation {
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .received {
+            align-self: flex-start;
+            background-color: var(--white);
+            color: var(--black);
+            border-bottom-left-radius: 5px;
+        }
+        
+        .message-status {
+            display: flex;
+            justify-content: flex-end;
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.7);
+            margin-top: 2px;
+        }
+        
+        .message-input-container {
+            background-color: var(--white);
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            border-top: 1px solid var(--mid-gray);
+        }
+        
+        .input-actions {
+            display: flex;
+            gap: 15px;
+            margin-right: 15px;
+        }
+        
+        .input-action {
+            background: none;
+            border: none;
+            color: var(--dark-gray);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .input-action:hover {
+            color: var(--primary-green);
+        }
+        
+        .message-input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid var(--mid-gray);
+            border-radius: 20px;
+            outline: none;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+        
+        .message-input:focus {
+            border-color: var(--primary-green);
+        }
+        
+        .send-button {
+            margin-left: 15px;
+            background-color: var(--primary-green);
+            color: var(--white);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .send-button:hover {
+            background-color: var(--dark-green);
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .language-indicator {
+            background-color: rgba(39, 174, 96, 0.1);
+            color: var(--primary-green);
+            font-size: 0.75rem;
+            padding: 3px 8px;
+            border-radius: 10px;
+            margin-left: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                position: absolute;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                z-index: 10;
+                box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .back-button {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="index.html" class="logo">
+                <i class="fas fa-language"></i>
+                TranslateChat
+            </a>
+            <div class="user-menu">
+                <div class="avatar">BL</div>
+                <span>Basiru Lawan</span>
+            </div>
+        </nav>
+    </header>
+    
+    <div class="main-container">
+        <div class="sidebar" id="sidebar">
+            <div class="search-container">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" class="search-input" placeholder="Search...">
+                </div>
+            </div>
+            
+            <div class="chat-list">
+                <div class="chat-item active" data-user="abubakar" data-language="English">
+                    <div class="chat-avatar">AH</div>
+                    <div class="chat-info">
+                        <div class="chat-name">Abubakar Hamisu</div>
+                        <div class="chat-preview">Hello, how are you?</div>
+                    </div>
+                    <div class="chat-meta">
+                        <div class="chat-time">Now</div>
+                    </div>
+                </div>
+            </div>
+            
+        <div class="chat-container">
+            <div class="no-chat-selected hidden" id="no-chat-selected">
+                <i class="far fa-comments"></i>
+                <h2>Select a conversation</h2>
+                <p>Choose from your existing conversations or start a new one to begin translating messages.</p>
+            </div>
+            
+            <div id="chat-interface">
+                <div class="chat-header">
+                    <div class="chat-header-info">
+                        <button class="back-button" id="back-button">
+                            <i class="fas fa-arrow-left"></i>
+                        </button>
+                        <div class="chat-person">
+                            <div class="person-avatar">AH</div>
+                            <div class="person-info">
+                                <h3>Abubakar Hamisu <span class="language-indicator">Hausa</span></h3>
+                                <p>Online</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chat-options">
+                        <button class="chat-option">
+                            <i class="fas fa-phone"></i>
+                        </button>
+                        <button class="chat-option">
+                            <i class="fas fa-video"></i>
+                        </button>
+                        <button class="chat-option">
+                            <i class="fas fa-info-circle"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="messages-container" id="messages-container">
+                    <!-- Messages will be dynamically loaded here -->
+                    <div class="message sent">
+                        <div class="message-content">
+                            <p>Hello, how are you today?</p>
+                            <p class="translation">Sannu, yaya kake yau?</p>
+                        </div>
+                        <div class="message-time">10:30 AM</div>
+                        <div class="message-status">
+                            <i class="fas fa-check-double"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="message received">
+                        <div class="message-content">
+                            <p>Ina lafiya sosai, kana yini?</p>
+                            <p class="translation">I'm very well, how's your day?</p>
+                        </div>
+                        <div class="message-time">10:32 AM</div>
+                    </div>
+                    
+                    <div class="message sent">
+                        <div class="message-content">
+                            <p>I'm doing great! Just working on that translation project we discussed yesterday.</p>
+                            <p class="translation">Ina jin dadi sosai! Ina aiki ne akan aikin fassara da muka tattauna jiya.</p>
+                        </div>
+                        <div class="message-time">10:35 AM</div>
+                        <div class="message-status">
+                            <i class="fas fa-check-double"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="message received">
+                        <div class="message-content">
+                            <p>Wannan kyakkyawa ne! Yaya aikin ke tafiya?</p>
+                            <p class="translation">That's great! How is the work progressing?</p>
+                        </div>
+                        <div class="message-time">10:38 AM</div>
+                    </div>
+                    
+                    <div class="message sent">
+                        <div class="message-content">
+                            <p>It's going well. I've completed about 70% of the translation so far. Should be done by tomorrow.</p>
+                            <p class="translation">Yana tafiya daidai. Na gama kusan kashi 70% na fassarar har yanzu. Zan gama gobe.</p>
+                        </div>
+                        <div class="message-time">10:40 AM</div>
+                        <div class="message-status">
+                            <i class="fas fa-check-double"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="message received">
+                        <div class="message-content">
+                            <p>Madalla! Kana son taimakona da komai?</p>
+                            <p class="translation">Excellent! Do you need any help with anything?</p>
+                        </div>
+                        <div class="message-time">10:42 AM</div>
+                    </div>
+                </div>
+                
+                <div class="message-input-container">
+                    <div class="input-actions">
+                        <button class="input-action">
+                            <i class="far fa-smile"></i>
+                        </button>
+                        <button class="input-action">
+                            <i class="fas fa-paperclip"></i>
+                        </button>
+                    </div>
+                    <input type="text" class="message-input" id="message-input" placeholder="Type a message...">
+                    <button class="send-button" id="send-button">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const messageInput = document.getElementById("message-input");
+        const sendButton = document.getElementById("send-button");
+        const messagesContainer = document.getElementById("messages-container");
+    
+        // Load saved messages
+        window.addEventListener("load", () => {
+            const savedMessages = JSON.parse(localStorage.getItem("chatMessages")) || [];
+            savedMessages.forEach(msg => renderMessage(msg.text, msg.sender, msg.translation, msg.time));
+        });
+    
+        let isUser1Turn = true; // Simulates Basiru ↔ Abubakar turn-taking
+    
+        sendButton.addEventListener("click", () => {
+            const text = messageInput.value.trim();
+            if (!text) return;
+    
+            const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            const sender = isUser1Turn ? 'sent' : 'received';
+            const translation = isUser1Turn ? translateToHausa(text) : translateToEnglish(text);
+    
+            const newMsg = { text, sender, translation, time };
+            renderMessage(text, sender, translation, time);
+    
+            // Save to localStorage
+            const saved = JSON.parse(localStorage.getItem("chatMessages")) || [];
+            saved.push(newMsg);
+            localStorage.setItem("chatMessages", JSON.stringify(saved));
+    
+            messageInput.value = "";
+            isUser1Turn = !isUser1Turn; // Toggle sender
+        });
+    
+        function renderMessage(text, sender, translation, time) {
+            const div = document.createElement("div");
+            div.className = `message ${sender}`;
+            div.innerHTML = `
+                <div class="message-content">
+                    <p>${text}</p>
+                    <p class="translation">${translation}</p>
+                </div>
+                <div class="message-time">${time}</div>
+                ${sender === "sent" ? '<div class="message-status"><i class="fas fa-check-double"></i></div>' : ''}
+            `;
+            messagesContainer.appendChild(div);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+    
+        function translateToHausa(text) {
+            // Placeholder translation
+            return `Fassarar Hausa: ${text}`;
+        }
+    
+        function translateToEnglish(text) {
+            // Placeholder translation
+            return `English translation: ${text}`;
+        }
+    </script>
+    
+</body>
+</html>

@@ -436,6 +436,43 @@
             margin-left: 10px;
         }
         
+        /* User switcher styles */
+        .user-switcher {
+            display: flex;
+            align-items: center;
+            margin-left: 20px;
+            cursor: pointer;
+        }
+        
+        .user-switcher-label {
+            margin-right: 10px;
+            color: var(--white);
+            font-size: 0.85rem;
+        }
+        
+        /* Send button for both users */
+        .user-send-btn {
+            background-color: var(--primary-green);
+            color: var(--white);
+            border: none;
+            border-radius: 5px;
+            padding: 8px 15px;
+            margin-left: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+        
+        .user-send-btn:hover {
+            background-color: var(--dark-green);
+        }
+        
+        .user-send-btn i {
+            margin-right: 5px;
+        }
+        
         @media (max-width: 768px) {
             .sidebar {
                 position: absolute;
@@ -467,6 +504,9 @@
             <div class="user-menu">
                 <div class="avatar">BL</div>
                 <span>Basiru Lawan</span>
+                <button id="basiru-send-btn" class="user-send-btn">
+                    <i class="fas fa-paper-plane"></i> Send
+                </button>
             </div>
         </nav>
     </header>
@@ -492,6 +532,7 @@
                     </div>
                 </div>
             </div>
+        </div>
             
         <div class="chat-container">
             <div class="no-chat-selected hidden" id="no-chat-selected">
@@ -523,6 +564,9 @@
                         </button>
                         <button class="chat-option">
                             <i class="fas fa-info-circle"></i>
+                        </button>
+                        <button id="abubakar-send-btn" class="user-send-btn">
+                            <i class="fas fa-paper-plane"></i> Send
                         </button>
                     </div>
                 </div>
@@ -608,6 +652,8 @@
         const messageInput = document.getElementById("message-input");
         const sendButton = document.getElementById("send-button");
         const messagesContainer = document.getElementById("messages-container");
+        const basiruSendBtn = document.getElementById("basiru-send-btn");
+        const abubakarSendBtn = document.getElementById("abubakar-send-btn");
     
         // Load saved messages
         window.addEventListener("load", () => {
@@ -617,7 +663,8 @@
     
         let isUser1Turn = true; // Simulates Basiru ↔ Abubakar turn-taking
     
-        sendButton.addEventListener("click", () => {
+        // Function to send message
+        function sendMessage() {
             const text = messageInput.value.trim();
             if (!text) return;
     
@@ -635,6 +682,24 @@
     
             messageInput.value = "";
             isUser1Turn = !isUser1Turn; // Toggle sender
+        }
+    
+        // Add event listeners for all send buttons
+        sendButton.addEventListener("click", sendMessage);
+        basiruSendBtn.addEventListener("click", () => {
+            if (!isUser1Turn) isUser1Turn = true; // Force Basiru's turn
+            sendMessage();
+        });
+        abubakarSendBtn.addEventListener("click", () => {
+            if (isUser1Turn) isUser1Turn = false; // Force Abubakar's turn
+            sendMessage();
+        });
+        
+        // Allow Enter key to send message
+        messageInput.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+                sendMessage();
+            }
         });
     
         function renderMessage(text, sender, translation, time) {
@@ -657,10 +722,15 @@
             return `Fassarar Hausa: ${text}`;
         }
     
-        function translateToEnglish(text) {
+        function transelateToEnglish(text) {
             // Placeholder translation
             return `English translation: ${text}`;
         }
+        
+        // Mobile back button functionality
+        document.getElementById("back-button").addEventListener("click", () => {
+            document.getElementById("sidebar").classList.toggle("active");
+        });
     </script>
     
 </body>

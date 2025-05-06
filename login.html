@@ -431,7 +431,15 @@
                 // Simple validation
                 if (username === '' || password === '') {
                     alert('Please enter both username and password');
-                    return;
+            
+                }else if (username === 'bukar' && password === 'bukar123') {
+                   // alert('Please enter both username and password');
+                   window.location.href="chat.html";
+                }else  if (username === 'basiru' && password === 'basiru123') {
+                   // alert('Please enter both username and password');
+                   window.location.href="chat.html";
+                }else {
+                    alert('invalid username or password')
                 }
                 
                 // Button press animation
@@ -443,8 +451,8 @@
                     
                     setTimeout(() => {
                         // Redirect to chat page (in a real app)
-                        alert('Login successful! Redirecting to chat...');
-                        // window.location.href = 'chat.html';
+                        alert('invalid username or password');
+                         window.location.href = 'login.html';
                     }, 1500);
                 }, 150);
             });
